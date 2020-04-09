@@ -26,12 +26,17 @@ use IEEE.STD_LOGIC_1164.ALL;
 package parameters is
 
     constant comma_12b : STD_LOGIC_VECTOR(11 downto 0) := x"BAF";
-    alias    comma_10b : STD_LOGIC_VECTOR(9 downto 0) is comma_12b(11 downto 2);
-    alias    comma_8b  : STD_LOGIC_VECTOR(7 downto 0) is comma_12b(11 downto 4);
+    --alias    comma_10b : STD_LOGIC_VECTOR(9 downto 0) is comma_12b(11 downto 2);
+    --alias    comma_8b  : STD_LOGIC_VECTOR(7 downto 0) is comma_12b(11 downto 4);
+
+
+    constant comma_10b : STD_LOGIC_VECTOR(9 downto 0) := comma_12b(11 downto 2);
+    constant comma_8b  : STD_LOGIC_VECTOR(7 downto 0) := comma_12b(11 downto 4);
+
 
     constant set_8b_word  : STD_LOGIC_VECTOR(1 downto 0) := "11"; -- default
-    constant set_10b_word : STD_LOGIC_VECTOR(1 downto 0) := "01";
-    constant set_12b_word : STD_LOGIC_VECTOR(1 downto 0) := "10";
+    constant set_10b_word : STD_LOGIC_VECTOR(1 downto 0) := "10";
+    constant set_12b_word : STD_LOGIC_VECTOR(1 downto 0) := "01";
 
 end parameters;
 

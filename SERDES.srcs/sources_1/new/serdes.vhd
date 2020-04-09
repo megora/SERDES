@@ -113,6 +113,4 @@ begin
             word_strb => word_strb
         );
 
-    dat_strb <= '1';
-
 end architecture RTL;

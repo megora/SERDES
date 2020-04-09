@@ -1,0 +1,6 @@
+*
+!SERDES.srcs/**/ip/*.xci
+!SERDES.srcs/**/ip/*.xml
+
+!SERDES.srcs/**/new/*.vhd
+!SERDES.srcs/**/new/*.v

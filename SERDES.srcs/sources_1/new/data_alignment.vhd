@@ -6,13 +6,14 @@
 -- Author      : Maria Gorchichko
 -- Company     : N/A
 -- Platform    : Xilinx Artix-7
--- Standard    : <VHDL-2008 | VHDL-2002 | VHDL-1993 | VHDL-1987>
+-- Standard    : VHDL-2008
 --------------------------------------------------------------------------------
 -- Description: 
 --------------------------------------------------------------------------------
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_MISC.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 use work.parameters.all;
@@ -33,122 +34,136 @@ architecture RTL of data_alignment is
 
     component comma_detection is
         Port (
-            clk              : in  STD_LOGIC;
-            rst              : in  STD_LOGIC;
-            bit_mode         : in  STD_LOGIC_VECTOR(1 downto 0);
-            dbl_word         : in  STD_LOGIC_VECTOR(15 downto 0);
-            dat_strb         : in  STD_LOGIC;
-            comma_dtct_comb  : out STD_LOGIC;
-            word_st_pos_comb : out STD_LOGIC_VECTOR(3 downto 0)
+            clk               : in  STD_LOGIC;
+            rst               : in  STD_LOGIC;
+            bit_mode          : in  STD_LOGIC_VECTOR(1 downto 0);
+            dbl_word          : in  STD_LOGIC_VECTOR(18 downto 0);
+            dat_strb          : in  STD_LOGIC;
+            comma_dtct_comb   : out STD_LOGIC;
+            word_end_pos_comb : out signed(3 downto 0)
         );
     end component;
 
-    signal dbl_word    : STD_LOGIC_VECTOR(15 downto 0);
-    signal word_i      : STD_LOGIC_VECTOR(11 downto 0); -- internal word
-    signal word_strb_i : STD_LOGIC;
+    signal dbl_word : STD_LOGIC_VECTOR(18 downto 0);
+    signal word_i   : STD_LOGIC_VECTOR(11 downto 0); -- internal word
 
-    signal comma_dtct_comb       : STD_LOGIC;
-    signal comma_first_dtct_flag : STD_LOGIC;
-    signal word_st_pos_comb      : STD_LOGIC_VECTOR(3 downto 0);
-    signal word_st_pos_int       : integer range 0 to 15 := 15;
+    -- valid word mask is: 
+    -- - not comma;
+    -- - comma was presented at least once;
+    -- - full word is presented in shift register;
+    signal valid_word          : STD_LOGIC_VECTOR(2 downto 0);
+    alias comma_detected       : STD_LOGIC is valid_word(2);
+    alias first_comma_detected : STD_LOGIC is valid_word(1);
+    alias full_word_in_sreg    : STD_LOGIC is valid_word(0);
+    constant valid_word_mask : STD_LOGIC_VECTOR(2 downto 0) := "011";
 
-    signal dat_strb_reg : STD_LOGIC;
+    signal word_end_pos_comb : signed(3 downto 0);
+    signal word_end_pos_int  : integer range 0 to 7;
 
 begin
 
-    -- Making 2 words sequence to seek the comma
+    -- Making 2 words sequence to search for the comma
     words_unite : process(rst, clk)
     begin
         if rst = '1' then
-            dbl_word <= x"0000";
+            dbl_word <= (others => '0');
         elsif clk'event and clk = '1' then
             if dat_strb = '1' then
-                dbl_word <= dat_in & dbl_word(15 downto 8);
+                dbl_word <= dbl_word(10 downto 0) & dat_in;
             end if;
         end if;
     end process;
 
-    -- Asynchtonous comma detection. 
+
+
+    -- Combinational comma detection. 
     comma_detection_comb : comma_detection
         port map(
-            clk              => clk,
-            rst              => rst,
-            bit_mode         => bit_mode,
-            dbl_word         => dbl_word,
-            dat_strb         => dat_strb,
-            comma_dtct_comb  => comma_dtct_comb,
-            word_st_pos_comb => word_st_pos_comb
+            clk               => clk,
+            rst               => rst,
+            bit_mode          => bit_mode,
+            dbl_word          => dbl_word,
+            dat_strb          => dat_strb,
+            comma_dtct_comb   => comma_detected,
+            word_end_pos_comb => word_end_pos_comb
         );
 
     -- Managing first comma detection flag
     first_comma_detection : process(clk, rst)
     begin
         if rst = '1' then
-            comma_first_dtct_flag <= '0';
+            first_comma_detected <= '0';
         elsif rising_edge(clk) then
-            if comma_dtct_comb = '1' then
-                comma_first_dtct_flag <= '1';
+            if comma_detected = '1' then
+                first_comma_detected <= '1';
             end if;
         end if;
     end process;
 
-    data_strobe_latch : process (clk, rst)
-    begin
-        if (rst = '1') then
-            dat_strb_reg <= '0';
-        elsif rising_edge(clk) then
-            dat_strb_reg <= dat_strb;
-        end if;
-    end process data_strobe_latch;
+    word_end_pos_int <= 
+        to_integer(unsigned(word_end_pos_comb(2 downto 0)));
+
+    full_word_in_sreg <= not word_end_pos_comb(word_end_pos_comb'high); -- not negative
 
 
     -- Slicing dbl_word and assigning outputs
-    word_st_pos_int <= to_integer(unsigned(word_st_pos_comb));
 
-    dbl_word_slicing : process (bit_mode, dbl_word, word_st_pos_int)
+    dbl_word_slicing : process (all)
     begin
-        case (bit_mode) is
-            when set_12b_word =>
+        if full_word_in_sreg = '1' then
+            case (bit_mode) is
+                when set_12b_word =>
 
-                case (word_st_pos_int) is
-                    when 15 downto 11 =>
-                        word_i <= dbl_word(word_st_pos_int downto
-                                           word_st_pos_int - 11);
-                        word_strb_i <= '1';
-                    when others =>
-                        word_i <= x"000";
-                        word_strb_i <= '0';
-                end case;
+                    --case (word_end_pos_int) is
+                    --    when 15 downto 11 =>
+                    --        word_i <= dbl_word(word_end_pos_int downto
+                    --                word_end_pos_int - 11);
+                    --        word_strb_i <= '1';
+                    --    when others =>
+                    --        word_i      <= x"000";
+                    --        word_strb_i <= '0';
+                    --end case;
 
-            when set_10b_word =>
+                    word_i <= dbl_word(word_end_pos_int + 11 downto
+                            word_end_pos_int);
 
-                case (word_st_pos_int) is
-                    when 15 downto 11 =>
-                        word_i <= "00" & dbl_word(word_st_pos_int downto
-                                                  word_st_pos_int - 9);
-                        word_strb_i <= '1';
-                    when others =>
-                        word_i <= x"000";
-                        word_strb_i <= '0';
-                end case;
+                when set_10b_word =>
 
-            when set_8b_word | "00" => -- 8b word is the default
+                    --case (word_end_pos_int) is
+                    --    when 15 downto 11 =>
+                    --        word_i <= "00" & dbl_word(word_end_pos_int downto
+                    --                word_end_pos_int - 9);
+                    --        word_strb_i <= '1';
+                    --    when others =>
+                    --        word_i      <= x"000";
+                    --        word_strb_i <= '0';
+                    --end case;
 
-                case (word_st_pos_int) is
-                    when 15 downto 8 =>
-                        word_i <= x"0" & dbl_word(word_st_pos_int downto
-                                                  word_st_pos_int - 7);
-                        word_strb_i <= '1';
-                    when others =>
-                        word_i <= x"000";
-                        word_strb_i <= '0';
-                end case;
+                    word_i <= "00" & dbl_word(word_end_pos_int + 9 downto
+                            word_end_pos_int);
 
-            when others =>
-                word_i <= x"000";
-                word_strb_i <= '0';
+                when set_8b_word | "00" => -- 8b word is the default
 
-        end case;
+                    --case (word_end_pos_int) is
+                    --    when 15 downto 8 =>
+                    --        word_i <= x"0" & dbl_word(word_end_pos_int downto
+                    --                word_end_pos_int - 7);
+                    --        word_strb_i <= '1';
+                    --    when others =>
+                    --        word_i      <= x"000";
+                    --        word_strb_i <= '0';
+                    --end case;
+
+                    word_i <= x"0" & dbl_word(word_end_pos_int + 7 downto
+                            word_end_pos_int);
+
+                when others =>
+                    word_i <= x"000";
+
+            end case;
+        else
+            word_i <= x"000";
+        end if;
     end process dbl_word_slicing;
 
     output_assignment : process (clk, rst)
@@ -157,14 +172,9 @@ begin
             word      <= x"000";
             word_strb <= '0';
         elsif rising_edge(clk) then
-            if (dat_strb_reg = '1') then
-                if comma_dtct_comb = '1' then
-                    word      <= x"000";
-                    word_strb <= '0';
-                else
-                    word      <= word_i;
-                    word_strb <= word_strb_i;
-                end if;
+            if valid_word = valid_word_mask then
+                word      <= word_i;
+                word_strb <= '1';
             else
                 word      <= x"000";
                 word_strb <= '0';
