@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Title       : comma_detection
--- Project     : GSoC-2012 SERDES qualification task
+-- Project     : GSoC-2020 SERDES qualification task
 --------------------------------------------------------------------------------
 -- File        : comma_detection.vhd
 -- Author      : Maria Gorchichko
@@ -23,7 +23,7 @@ entity comma_detection is
         clk               : in  STD_LOGIC;
         rst               : in  STD_LOGIC;
         bit_mode          : in  STD_LOGIC_VECTOR(1 downto 0);
-        dbl_word          : in  STD_LOGIC_VECTOR(18 downto 0);
+        word_sreg          : in  STD_LOGIC_VECTOR(18 downto 0);
         dat_strb          : in  STD_LOGIC;
         comma_dtct_comb   : out STD_LOGIC;
         word_end_pos_comb : out signed(3 downto 0)
@@ -51,7 +51,7 @@ begin
                 when set_12b_word =>
 
                     -- Analyze slices [18:7], [17:6] ... [11:0]
-                    if dbl_word((11 + comma_bit) downto comma_bit) = comma_12b then
+                    if word_sreg((11 + comma_bit) downto comma_bit) = comma_12b then
                         comma_detected(comma_bit) <= '1';
                     else
                         comma_detected(comma_bit) <= '0';
@@ -60,7 +60,7 @@ begin
                 when set_10b_word =>
 
                     -- Analyze slices [16:7], [15:6] ... [9:0]
-                    if dbl_word((9 + comma_bit) downto comma_bit) = comma_10b then
+                    if word_sreg((9 + comma_bit) downto comma_bit) = comma_10b then
                         comma_detected(comma_bit) <= '1';
                     else
                         comma_detected(comma_bit) <= '0';
@@ -69,7 +69,7 @@ begin
                 when others => -- set_8b_word
 
                     -- Analyze slices [14:7], [13:6] ... [7:0]
-                    if dbl_word((7 + comma_bit) downto comma_bit) = comma_8b then
+                    if word_sreg((7 + comma_bit) downto comma_bit) = comma_8b then
                         comma_detected(comma_bit) <= '1';
                     else
                         comma_detected(comma_bit) <= '0';

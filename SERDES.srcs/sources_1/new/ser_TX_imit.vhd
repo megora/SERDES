@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Title       : set_TX_imit
--- Project     : GSoC-2012 SERDES qualification task
+-- Project     : GSoC-2020 SERDES qualification task
 --------------------------------------------------------------------------------
 -- File        : ser_TX_imit.vhd
 -- Author      : Maria Gorchichko

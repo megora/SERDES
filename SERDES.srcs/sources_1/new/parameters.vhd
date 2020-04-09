@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Title       : parameters
--- Project     : GSoC-2012 SERDES qualification task
+-- Project     : GSoC-2020 SERDES qualification task
 --------------------------------------------------------------------------------
 -- File        : parameters.vhd
 -- Author      : Maria Gorchichko

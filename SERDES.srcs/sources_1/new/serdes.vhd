@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Title       : serdes
--- Project     : GSoC-2012 SERDES qualification task
+-- Project     : GSoC-2020 SERDES qualification task
 --------------------------------------------------------------------------------
 -- File        : serdes.vhd
 -- Author      : Maria Gorchichko

@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Title       : deserializer
--- Project     : GSoC-2012 SERDES qualification task
+-- Project     : GSoC-2020 SERDES qualification task
 --------------------------------------------------------------------------------
 -- File        : deserializer.vhd
 -- Author      : Maria Gorchichko

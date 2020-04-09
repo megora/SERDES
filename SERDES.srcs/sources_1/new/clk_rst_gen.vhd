@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 -- Title       : clk_rst_gen
--- Project     : GSoC-2012 SERDES qualification task
+-- Project     : GSoC-2020 SERDES qualification task
 --------------------------------------------------------------------------------
 -- File        : clk_rst_gen.vhd
 -- Author      : Maria Gorchichko
