@@ -114,45 +114,15 @@ begin
             case (bit_mode) is
                 when set_12b_word =>
 
-                    --case (word_end_pos_int) is
-                    --    when 15 downto 11 =>
-                    --        word_i <= dbl_word(word_end_pos_int downto
-                    --                word_end_pos_int - 11);
-                    --        word_strb_i <= '1';
-                    --    when others =>
-                    --        word_i      <= x"000";
-                    --        word_strb_i <= '0';
-                    --end case;
-
                     word_i <= dbl_word(word_end_pos_int + 11 downto
                             word_end_pos_int);
 
                 when set_10b_word =>
 
-                    --case (word_end_pos_int) is
-                    --    when 15 downto 11 =>
-                    --        word_i <= "00" & dbl_word(word_end_pos_int downto
-                    --                word_end_pos_int - 9);
-                    --        word_strb_i <= '1';
-                    --    when others =>
-                    --        word_i      <= x"000";
-                    --        word_strb_i <= '0';
-                    --end case;
-
                     word_i <= "00" & dbl_word(word_end_pos_int + 9 downto
                             word_end_pos_int);
 
                 when set_8b_word | "00" => -- 8b word is the default
-
-                    --case (word_end_pos_int) is
-                    --    when 15 downto 8 =>
-                    --        word_i <= x"0" & dbl_word(word_end_pos_int downto
-                    --                word_end_pos_int - 7);
-                    --        word_strb_i <= '1';
-                    --    when others =>
-                    --        word_i      <= x"000";
-                    --        word_strb_i <= '0';
-                    --end case;
 
                     word_i <= x"0" & dbl_word(word_end_pos_int + 7 downto
                             word_end_pos_int);

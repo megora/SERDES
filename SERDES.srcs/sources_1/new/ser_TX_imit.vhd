@@ -75,39 +75,6 @@ architecture Behavioral of ser_TX_imit is
 
 begin
 
-    --clk_aux_gen : process
-    --begin
-    --    clk_aux <= '0';
-    --    wait for dat_phi;
-    --    L1 : loop
-    --        clk_aux <= '1';
-    --        wait for dat_T / 2;
-    --        clk_aux <= '0';
-    --        wait for dat_T / 2;
-    --    end loop L1;
-    --end process;
-
-    --dat_transmission : process(clk_aux)
-    --    variable bit_num : integer range 15 downto 0 := 15;
-    --    variable dout    : STD_LOGIC;
-    --begin
-    --    if clk_aux'event and clk_aux = '1' then
-    --        if bit_num = 15 then
-    --            bit_num := 0;
-    --        else
-    --            bit_num := bit_num + 1;
-    --        end if;
-    --        -- select bit to send and assign values to the output ports
-    --        if bit_num < 8 then
-    --            dout := tword_seq(bit_num);
-    --        else
-    --            dout := '0';
-    --        end if;
-    --        dout_p <= dout;
-    --        dout_n <= not dout;
-    --    end if;
-    --end process;
-
     dat_transmission : process
         --variable tx_cnt : integer range (tx_arr_size - 1 downto 0);
 
