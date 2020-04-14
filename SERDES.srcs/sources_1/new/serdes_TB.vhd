@@ -31,10 +31,11 @@ architecture Behavioral of serdes_TB is
 
     component serdes is
         Port (
-            GCLK     : in STD_LOGIC;
-            bit_mode : in STD_LOGIC_VECTOR(1 downto 0);
-            RxD_p    : in STD_LOGIC;
-            RxD_n    : in STD_LOGIC
+            GCLK      : in STD_LOGIC;
+            bit_mode  : in STD_LOGIC_VECTOR(1 downto 0);
+            RxD       : in STD_LOGIC;
+            word      : out STD_LOGIC_VECTOR(11 downto 0);
+            word_strb : out STD_LOGIC
         );
     end component;
 
@@ -49,7 +50,7 @@ architecture Behavioral of serdes_TB is
         );
     end component;
 
-    signal dat_p, dat_n : STD_LOGIC;
+    signal dat : STD_LOGIC;
     signal bit_mode : STD_LOGIC_VECTOR(1 downto 0);
 
 
@@ -68,16 +69,17 @@ begin
     ser_TX_imit_inst : ser_TX_imit
         port map(
             bit_mode => bit_mode,
-            dout_p   => dat_p,
-            dout_n   => dat_n
+            dout_p   => dat,
+            dout_n   => open
         );
 
     UUT : serdes
         port map (
-            GCLK     => GCLK,
-            bit_mode => bit_mode,
-            RxD_p    => dat_p,
-            RxD_n    => dat_n
+            GCLK      => GCLK,
+            bit_mode  => bit_mode,
+            RxD       => dat_p,
+            word      => open,
+            word_strb => open
         );
 
 end Behavioral;

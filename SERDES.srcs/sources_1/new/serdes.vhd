@@ -22,8 +22,7 @@ entity serdes is
     Port (
         GCLK      : in  STD_LOGIC;
         bit_mode  : in  STD_LOGIC_VECTOR(1 downto 0);
-        RxD_p     : in  STD_LOGIC;
-        RxD_n     : in  STD_LOGIC;
+        RxD       : in  STD_LOGIC;
         word      : out STD_LOGIC_VECTOR(11 downto 0);
         word_strb : out STD_LOGIC
     );
@@ -53,8 +52,7 @@ architecture RTL of serdes is
             clk_300_ph0  : in  STD_LOGIC;
             clk_300_ph90 : in  STD_LOGIC;
             gl_rst       : in  STD_LOGIC;
-            RxD_p        : in  STD_LOGIC;
-            RxD_n        : in  STD_LOGIC;
+            RxD          : in  STD_LOGIC;
             dat          : out STD_LOGIC_VECTOR(7 downto 0);
             dat_strb     : out STD_LOGIC
         );
@@ -96,8 +94,7 @@ begin
             clk_300_ph0  => clk_300_ph0,
             clk_300_ph90 => clk_300_ph90,
             gl_rst       => gl_rst,
-            RxD_p        => RxD_p,
-            RxD_n        => RxD_n,
+            RxD          => RxD,
             dat          => dat,
             dat_strb     => dat_strb
         );

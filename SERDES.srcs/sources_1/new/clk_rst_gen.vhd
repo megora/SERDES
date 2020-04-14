@@ -39,7 +39,6 @@ architecture RTL of clk_rst_gen is
             -- Clock out ports
             clk_300_ph0  : out STD_LOGIC;
             clk_300_ph90 : out STD_LOGIC;
-            clk_200      : out STD_LOGIC;
             clk_75       : out STD_LOGIC
         );
     end component MMCM_300Mhz;
@@ -54,7 +53,6 @@ begin
         port map(
             clk_300_ph0  => clk_300_ph0,
             clk_300_ph90 => clk_300_ph90,
-            clk_200      => open,
             clk_75       => clk_75_i,
             reset        => '0',
             locked       => clk_locked,

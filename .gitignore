@@ -1,6 +1,10 @@
 *
-!SERDES.srcs/**/ip/*.xci
-!SERDES.srcs/**/ip/*.xml
+
+!*.xdc
+
+!SERDES.srcs/**/ip/**/*.xci
+!SERDES.srcs/**/ip/**/*.xml
+!SERDES.srcs/**/ip/**/*.vhdl
 
 !SERDES.srcs/**/new/*.vhd
 !SERDES.srcs/**/new/*.v

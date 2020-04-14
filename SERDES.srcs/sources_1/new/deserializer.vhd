@@ -23,8 +23,7 @@ entity deserializer is
         clk_300_ph0  : in  STD_LOGIC;
         clk_300_ph90 : in  STD_LOGIC;
         gl_rst       : in  STD_LOGIC;
-        RxD_p        : in  STD_LOGIC;
-        RxD_n        : in  STD_LOGIC;
+        RxD          : in  STD_LOGIC;
         dat          : out STD_LOGIC_VECTOR(7 downto 0);
         dat_strb     : out STD_LOGIC
     );
@@ -82,7 +81,7 @@ begin
             CLKB         => clk_300_ph0_inv,
             OCLK         => clk_300_ph90,
             OCLKB        => clk_300_ph90_inv,
-            D            => RxD_p,
+            D            => RxD,
             BITSLIP      => '0',
             CE1          => iserdes_ce,
             CE2          => '1',
