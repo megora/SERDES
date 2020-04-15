@@ -1,7 +1,7 @@
 -- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
--- Date        : Tue Apr 14 14:51:58 2020
+-- Date        : Tue Apr 14 19:21:25 2020
 -- Host        : megora-laptop running 64-bit Linux Mint 19.3 Tricia
 -- Command     : write_vhdl -force -mode funcsim {/home/megora/Documents/HDL
 --               projects/GSoC/SERDES/SERDES.srcs/sources_1/ip/MMCM_300Mhz/MMCM_300Mhz_sim_netlist.vhdl}

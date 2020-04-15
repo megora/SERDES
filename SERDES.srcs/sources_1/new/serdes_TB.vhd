@@ -29,15 +29,16 @@ end serdes_TB;
 
 architecture Behavioral of serdes_TB is
 
-    component serdes is
-        Port (
-            GCLK      : in STD_LOGIC;
-            bit_mode  : in STD_LOGIC_VECTOR(1 downto 0);
-            RxD       : in STD_LOGIC;
+    component serdes_wrap is
+        port (
+            GCLK      : in  STD_LOGIC;
+            RxD_p     : in  STD_LOGIC;
+            RxD_n     : in  STD_LOGIC;
+            bit_mode  : in  STD_LOGIC_VECTOR(1 downto 0);
             word      : out STD_LOGIC_VECTOR(11 downto 0);
             word_strb : out STD_LOGIC
         );
-    end component;
+    end component serdes_wrap;
 
     constant GCLK_T : time := 10 ns;
     signal GCLK     : STD_LOGIC;
@@ -50,7 +51,7 @@ architecture Behavioral of serdes_TB is
         );
     end component;
 
-    signal dat : STD_LOGIC;
+    signal dat_p, dat_n : STD_LOGIC;
     signal bit_mode : STD_LOGIC_VECTOR(1 downto 0);
 
 
@@ -66,18 +67,19 @@ begin
         end loop L1;
     end process;
 
-    ser_TX_imit_inst : ser_TX_imit
+    ser_TX_imit_inst : entity work.ser_TX_imit
         port map(
             bit_mode => bit_mode,
-            dout_p   => dat,
-            dout_n   => open
+            dout_p   => dat_p,
+            dout_n   => dat_n
         );
 
-    UUT : serdes
+    UUT : entity work.serdes_wrap
         port map (
             GCLK      => GCLK,
+            RxD_p     => dat_p,
+            RxD_n     => dat_n,
             bit_mode  => bit_mode,
-            RxD       => dat_p,
             word      => open,
             word_strb => open
         );
