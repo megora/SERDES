@@ -1,6 +1,8 @@
 *
 
 !*.xdc
+!/SERDES.srcs/sources_1/ip/MMCM_300Mhz/*
+/SERDES.srcs/sources_1/ip/MMCM_300Mhz/doc
 
 !SERDES.srcs/**/ip/**/*.xci
 !SERDES.srcs/**/ip/**/*.xml
