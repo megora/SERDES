@@ -14,7 +14,14 @@ Create VHDL code for a serial to parallel converter (SERDES) with varied bandwid
 
 ## Description
 - Target device: Artix-7 FPGA
+- External clock: 100 MHz
 
-In the case, if the first symbolic sequence x"BAF" occurs in the last bit of the 8-bit package, we will need to store no more than 24 bits (3 8-bit packages).
-1. Modules ISERDESE2 provided for Xilinx 7 generation FPGA allow cascading for increasing bitwidth, but the allowed values of bitwidth do not contain 12 bit.
-2. Besides, switching bitwidth of deserializer will require resynthesizing firmware.
+## Project structure
+* `clk_rst_gen.vhd`
+This module is responsible for the clock and global reset signals generating.
+* `deseriazlizer.vhd`
+This module is responsible for the serial-parallel data transformation, and contains the Xilinx primitive ISERDESE2 configured in 8-bit mode. Although this primitive could be configured in higher bit width modes, it do not provide all required bit width values. Moreover, mode change is not available without reconfiguration.
+* `data alignment.vhd`
+This module reshapes 8-bit data received from the deseriazlizer module into properly aligned words according to the word length settings.
+* `comma_detection.vhd`
+This submodule performs asynchronous comma detection in the 19-bit shift register, fed from the deserializer. It outputs comma detection flag if the comma is detected and the detected word’s LSB index in the shift register.
