@@ -36,7 +36,7 @@ architecture RTL of comma_detection is
     signal word_end_pos        : integer range -4 to 7;
     signal word_end_pos_next   : integer range -4 to 7;
     constant word_end_pos_init : integer := 0;
-    signal full_word_flag      : STD_LOGIC;
+    --signal full_word_flag      : STD_LOGIC;
 
     signal comma_detected     : STD_LOGIC_VECTOR(7 downto 0);
     signal comma_detected_int : integer range 255 downto 0;

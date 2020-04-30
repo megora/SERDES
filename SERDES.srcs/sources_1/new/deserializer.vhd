@@ -32,7 +32,6 @@ end entity deserializer;
 architecture RTL of deserializer is
 
     signal iserdes_ce : STD_LOGIC;
-    signal gl_rst_inv : STD_LOGIC;
 
     signal Q : STD_LOGIC_VECTOR(7 downto 0);
 
@@ -41,28 +40,33 @@ architecture RTL of deserializer is
 
 begin
 
-    gl_rst_inv <= not gl_rst;
+    --iserdes_ce_gen : UNISIM.Vcomponents.FDSE
+    --    generic map (INIT => '0')
+    --    port map (
+    --        D  => '0',
+    --        CE => '1',
+    --        C  => clk_300_ph0,
+    --        S  => gl_rst_inv,
+    --        Q  => iserdes_ce
+    --    );
 
-    iserdes_ce_gen : UNISIM.Vcomponents.FDSE
-        generic map (INIT => '0')
-        port map (
-            D  => '0',
-            CE => '1',
-            C  => clk,
-            S  => gl_rst_inv,
-            Q  => iserdes_ce
-        );
+    iserdes_ce_gen : process (clk)
+    begin
+        if falling_edge(clk) then
+            iserdes_ce <= not gl_rst;
+        end if;
+    end process iserdes_ce_gen;
 
     clk_300_ph0_inv  <= not clk_300_ph0;
     clk_300_ph90_inv <= not clk_300_ph90;
 
     ISERDESE2_inst : UNISIM.Vcomponents.ISERDESE2
         generic map (
-            INTERFACE_TYPE    => "MEMORY",
+            INTERFACE_TYPE    => "NETWORKING",
             DATA_RATE         => "DDR",
             DATA_WIDTH        => 8,
             OFB_USED          => "FALSE",
-            NUM_CE            => 1,
+            NUM_CE            => 2,
             SERDES_MODE       => "MASTER",
             IOBDELAY          => "NONE",
             DYN_CLKDIV_INV_EN => "FALSE",
@@ -84,7 +88,7 @@ begin
             D            => RxD,
             BITSLIP      => '0',
             CE1          => iserdes_ce,
-            CE2          => '1',
+            CE2          => iserdes_ce,
             CLKDIV       => clk,
             CLKDIVP      => '0',
             DDLY         => '0',

@@ -66,7 +66,7 @@ architecture Behavioral of ser_TX_imit is
     constant dat_T   : time := 1666 ps; -- data are transmitted with 600 MHz frequency
     constant dat_phi : time := 5800 ps; -- initial data transmission phase shift
 
-    constant init_delay : time := 451 ns; -- clock manager is locked in about 430 ns
+    constant init_delay : time := 1 us; -- clock manager is locked in about 530 ns
 
     signal dout : STD_LOGIC;
 
